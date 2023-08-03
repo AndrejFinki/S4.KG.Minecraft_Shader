@@ -1,8 +1,11 @@
-// Vertex Shader (gbuffers_water.vsh)
+/* Vertex Shader (gbuffers_water.vsh) */
+# version 120
 
 varying vec2 TexCoords;
 
-void main() {
+void
+main()
+{
     gl_Position = ftransform();
     TexCoords = gl_MultiTexCoord0.st;
 }
