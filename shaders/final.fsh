@@ -4,10 +4,9 @@ varying vec2 TexCoords;
 
 uniform sampler2D colortex0;
 
-void
+void 
 main()
 {
-    vec3 Color = texture2D( colortex0, TexCoords ).rgb;
-    Color = vec3( dot( Color, vec3( 0.3f ) ) );
-    gl_FragColor = vec4( Color, 1.0f );
+   vec3 Color = pow( texture2D( colortex0, TexCoords ).rgb, vec3( 1.0 / 2.2 ) );
+   gl_FragColor = vec4( Color, 1.0 );
 }
