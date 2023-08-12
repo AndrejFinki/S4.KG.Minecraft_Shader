@@ -1,4 +1,6 @@
 #version 120
+#include "distort.glsl"
+
 
 /* Texture Coordinates */
 varying vec2 TexCoords;
@@ -16,6 +18,10 @@ uniform sampler2D depthtex0;
 
 /* Optifine: Shadow Texture */
 uniform sampler2D shadowtex0;
+uniform sampler2D shadowtex1;
+
+/* Optifine: Shadow Color */
+uniform sampler2D shadowcolor0;
 
 /* Optifine: Matrices */
 uniform mat4 gbufferProjectionInverse;
@@ -42,7 +48,19 @@ float AdjustLightmapTorch( in float );
 float AdjustLightmapSky( in float );
 vec2 AdjustLightmap( in vec2 );
 vec3 GetLightmapColor( in vec2 );
-float GetShadow( in float );
+vec3 GetShadow( in float );
+
+float Visibility(in sampler2D ShadowMap, in vec3 SampleCoords){
+    return step(SampleCoords.z - 0.001f, texture2D(ShadowMap, SampleCoords.xy).r);
+}
+
+vec3 TransparentShadow(in vec3 SampleCoords){
+    float ShadowVisibility0 = Visibility(shadowtex0, SampleCoords);
+    float ShadowVisibility1 = Visibility(shadowtex1, SampleCoords);
+    vec4 ShadowColor0 = texture2D(shadowcolor0, SampleCoords.xy);
+    vec3 TransmittedColor = ShadowColor0.rgb * (1.0f - ShadowColor0.a);
+    return mix(TransmittedColor * ShadowVisibility1, vec3(1.0f), ShadowVisibility0);
+}
 
 void
 main()
@@ -106,7 +124,7 @@ GetLightmapColor( in vec2 Lightmap )
     return LightmapLighting;
 }
 
-float
+vec3
 GetShadow( in float depth )
 {
     vec3 ClipSpace = vec3( TexCoords, depth ) * 2.0 - 1.0;
@@ -114,6 +132,7 @@ GetShadow( in float depth )
     vec3 View = ViewW.xyz / ViewW.w;
     vec4 World = gbufferModelViewInverse * vec4( View, 1.0 );
     vec4 ShadowSpace = shadowProjection * shadowModelView * World;
+    ShadowSpace.xy = DistortPosition(ShadowSpace.xy);
     vec3 SampleCoords = ShadowSpace.xyz * 0.5 + 0.5;
-    return step( SampleCoords.z - 0.001, texture2D( shadowtex0, SampleCoords.xy ).r );
+    return TransparentShadow(SampleCoords);
 }
