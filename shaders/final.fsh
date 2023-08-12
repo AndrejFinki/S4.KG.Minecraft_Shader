@@ -4,7 +4,7 @@ varying vec2 TexCoords;
 
 uniform sampler2D colortex0;
 
-void 
+void
 main()
 {
    vec3 Color = pow( texture2D( colortex0, TexCoords ).rgb, vec3( 1.0 / 2.2 ) );
