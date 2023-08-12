@@ -1,6 +1,12 @@
 #version 120
 #include "distort.glsl"
+#define SHADOW_SAMPLES 2
 
+const int ShadowSamplesPerSize = 2 * SHADOW_SAMPLES + 1;
+const int TotalSamples = ShadowSamplesPerSize * ShadowSamplesPerSize;
+
+uniform sampler2D noisetex;
+const int noiseTextureResolution = 128; // Default value is 64
 
 /* Texture Coordinates */
 varying vec2 TexCoords;
@@ -134,5 +140,21 @@ GetShadow( in float depth )
     vec4 ShadowSpace = shadowProjection * shadowModelView * World;
     ShadowSpace.xy = DistortPosition(ShadowSpace.xy);
     vec3 SampleCoords = ShadowSpace.xyz * 0.5 + 0.5;
-    return TransparentShadow(SampleCoords);
+    
+    float RandomAngle = texture2D(noisetex, TexCoords * 20.0f).r * 100.0f;
+    float cosTheta = cos(RandomAngle);
+    float sinTheta = sin(RandomAngle);
+    mat2 Rotation = mat2(cosTheta, -sinTheta, sinTheta, cosTheta) / shadowMapResolution;
+
+    vec3 ShadowAccum = vec3(0.0f);
+    for(int x = -SHADOW_SAMPLES; x<= SHADOW_SAMPLES; x++){
+        for(int y = -SHADOW_SAMPLES; y <= SHADOW_SAMPLES; y++){
+            vec2 Offset = Rotation * vec2(x,y);
+            vec3 CurrentSampleCoordinate = vec3(SampleCoords.xy + Offset, SampleCoords.z);
+            ShadowAccum += TransparentShadow(CurrentSampleCoordinate);
+        }
+    }
+
+    ShadowAccum /= TotalSamples;
+    return ShadowAccum;
 }
