@@ -1,12 +1,8 @@
 #version 120
+
 #include "distort.glsl"
+
 #define SHADOW_SAMPLES 2
-
-const int ShadowSamplesPerSize = 2 * SHADOW_SAMPLES + 1;
-const int TotalSamples = ShadowSamplesPerSize * ShadowSamplesPerSize;
-
-uniform sampler2D noisetex;
-const int noiseTextureResolution = 128; // Default value is 64
 
 /* Texture Coordinates */
 varying vec2 TexCoords;
@@ -29,6 +25,9 @@ uniform sampler2D shadowtex1;
 /* Optifine: Shadow Color */
 uniform sampler2D shadowcolor0;
 
+/* Optifine: Noise Texture Map */
+uniform sampler2D noisetex;
+
 /* Optifine: Matrices */
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
@@ -44,8 +43,13 @@ const int colortex2Format = RGB16;
 /* Optifine: Describes how titled the sun is from an overhead path in degrees */
 const float sunPathRotation = -40.0f;
 
-/* Optifine: Shadow Map Resolution */
+/* Optifine: Map Resolutions */
 const int shadowMapResolution = 1024;
+const int noiseTextureResolution = 128;
+
+/* Optifine: Shadow Constants */
+const int ShadowSamplesPerSize = 2 * SHADOW_SAMPLES + 1;
+const int TotalSamples = ShadowSamplesPerSize * ShadowSamplesPerSize;
 
 /* Ambient lighting factor used in lighting calculations */
 const float Ambient = 0.025f;
@@ -55,18 +59,8 @@ float AdjustLightmapSky( in float );
 vec2 AdjustLightmap( in vec2 );
 vec3 GetLightmapColor( in vec2 );
 vec3 GetShadow( in float );
-
-float Visibility(in sampler2D ShadowMap, in vec3 SampleCoords){
-    return step(SampleCoords.z - 0.001f, texture2D(ShadowMap, SampleCoords.xy).r);
-}
-
-vec3 TransparentShadow(in vec3 SampleCoords){
-    float ShadowVisibility0 = Visibility(shadowtex0, SampleCoords);
-    float ShadowVisibility1 = Visibility(shadowtex1, SampleCoords);
-    vec4 ShadowColor0 = texture2D(shadowcolor0, SampleCoords.xy);
-    vec3 TransmittedColor = ShadowColor0.rgb * (1.0f - ShadowColor0.a);
-    return mix(TransmittedColor * ShadowVisibility1, vec3(1.0f), ShadowVisibility0);
-}
+float Visibility( in sampler2D, in vec3 );
+vec3 TransparentShadow( in vec3 );
 
 void
 main()
@@ -138,23 +132,39 @@ GetShadow( in float depth )
     vec3 View = ViewW.xyz / ViewW.w;
     vec4 World = gbufferModelViewInverse * vec4( View, 1.0 );
     vec4 ShadowSpace = shadowProjection * shadowModelView * World;
-    ShadowSpace.xy = DistortPosition(ShadowSpace.xy);
+    ShadowSpace.xy = DistortPosition( ShadowSpace.xy );
     vec3 SampleCoords = ShadowSpace.xyz * 0.5 + 0.5;
     
-    float RandomAngle = texture2D(noisetex, TexCoords * 20.0f).r * 100.0f;
-    float cosTheta = cos(RandomAngle);
-    float sinTheta = sin(RandomAngle);
-    mat2 Rotation = mat2(cosTheta, -sinTheta, sinTheta, cosTheta) / shadowMapResolution;
+    float RandomAngle = texture2D( noisetex, TexCoords * 20.0 ).r * 100.0;
+    float cosTheta = cos( RandomAngle );
+    float sinTheta = sin( RandomAngle );
+    mat2 Rotation = mat2( cosTheta, -sinTheta, sinTheta, cosTheta ) / shadowMapResolution;
 
-    vec3 ShadowAccum = vec3(0.0f);
-    for(int x = -SHADOW_SAMPLES; x<= SHADOW_SAMPLES; x++){
-        for(int y = -SHADOW_SAMPLES; y <= SHADOW_SAMPLES; y++){
-            vec2 Offset = Rotation * vec2(x,y);
-            vec3 CurrentSampleCoordinate = vec3(SampleCoords.xy + Offset, SampleCoords.z);
-            ShadowAccum += TransparentShadow(CurrentSampleCoordinate);
+    vec3 ShadowAccum = vec3( 0.0 );
+    for( int x = -SHADOW_SAMPLES ; x <= SHADOW_SAMPLES ; x++ ){
+        for( int y = -SHADOW_SAMPLES ; y <= SHADOW_SAMPLES ; y++ ){
+            vec2 Offset = Rotation * vec2( x, y );
+            vec3 CurrentSampleCoordinate = vec3( SampleCoords.xy + Offset, SampleCoords.z );
+            ShadowAccum += TransparentShadow( CurrentSampleCoordinate );
         }
     }
 
     ShadowAccum /= TotalSamples;
     return ShadowAccum;
+}
+
+float
+Visibility( in sampler2D ShadowMap, in vec3 SampleCoords )
+{
+  return step( SampleCoords.z - 0.001, texture2D( ShadowMap, SampleCoords.xy ).r );
+}
+
+vec3
+TransparentShadow( in vec3 SampleCoords )
+{
+  float ShadowVisibility0 = Visibility( shadowtex0, SampleCoords );
+  float ShadowVisibility1 = Visibility( shadowtex1, SampleCoords );
+  vec4 ShadowColor0 = texture2D( shadowcolor0, SampleCoords.xy );
+  vec3 TransmittedColor = ShadowColor0.rgb * ( 1.0 - ShadowColor0.a );
+  return mix( TransmittedColor * ShadowVisibility1, vec3( 1.0 ), ShadowVisibility0 );
 }
