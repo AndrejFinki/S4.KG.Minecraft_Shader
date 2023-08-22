@@ -68,8 +68,8 @@ void main() {
 
     viewPos = gbufferModelView * viewPos; 
    
-    //vec3 normal = normalize(gl_NormalMatrix * Normal).xyz;
-    vec3 normal = normalize(gl_NormalMatrix * gl_Normal).xyz;
+    vec3 normal = normalize(gl_NormalMatrix * Normal).xyz;
+    //vec3 normal = normalize(gl_NormalMatrix * gl_Normal).xyz;
 
     vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
 	vec3 binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
