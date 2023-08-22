@@ -16,6 +16,8 @@ varying vec3 Normal;
 varying vec3 wpos;
 varying vec3 viewDir;
 varying vec3 FlatNormal;
+varying float frameTimeCounteri;
+varying mat3 TbnMatrix;
 
 
 
@@ -48,6 +50,7 @@ void main() {
             normal = normalize(cross(derivative1, derivative2));
 	}else{
 		normal = FlatNormal;
+		normal = normalize(TbnMatrix*normal);
 	}
 
 	vec3 reflectDir = reflect(-normalize(viewDir), normal);
@@ -57,7 +60,7 @@ void main() {
 
 	vec3 finalColor;
 	if(spec >= 0.05){
-		vec3 specularColor = vec3(0.45f);
+		vec3 specularColor = vec3(0.35f);
 
 		finalColor = color.rgb + pow(spec,32)*specularColor;
 	}else{
