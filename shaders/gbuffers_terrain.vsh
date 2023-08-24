@@ -22,7 +22,7 @@ main()
     LightmapCoords = ( LightmapCoords * 33.05 / 32.0 ) - ( 1.05 / 32.0 );
     Normal = gl_NormalMatrix * gl_Normal;
     Color = gl_Color;
-    if(mc_Entity.x == 10031.0){
+    if(mc_Entity.x == 10031.0 || mc_Entity.x == 10032.0){
             
             vec4 pos = gl_ModelViewMatrix * gl_Vertex;
 
@@ -35,23 +35,33 @@ main()
     
             float fy = fract(worldpos.y + 0.001);
 
-            if (fy > 0.1) {
-
                     
-                    float amp2 = 0.05;
-                    
-                    float phase2 = (frameTimeCounter*0.6 + worldpos.x / 11.0 + worldpos.z /  5.0);
-                    
-                    float angle2 = TWO_PI * phase2;
+            float amp1 = 0.03;
+            float amp2 = 0.05;
+            float phase1 = (frameTimeCounter*0.75 + worldpos.x /  7.0 + worldpos.z / 13.0);
+            float phase2 = (frameTimeCounter*0.6 + worldpos.x / 11.0 + worldpos.z /  5.0);
+            float angle1 = TWO_PI * phase1;
+            float angle2 = TWO_PI * phase2;
 
-                    float wave = amp2 * sin(angle2);
+			float wave = amp1 * sin(angle1) - amp2 * cos(angle2);
 
-                    displacement = clamp(wave, -fy, 1.0-fy);
-                    viewPos.x += displacement;
-                    viewPos.z += displacement*0.2;
-                    
 
+            displacement = clamp(wave, -fy, 1.0-fy);
+
+            if(mc_Entity.x == 10031.0){
+                
+                viewPos.x += displacement;
+                viewPos.z += displacement*0.5;
+            }else{
+                viewPos.x += displacement;
+                viewPos.z -= displacement;
+                viewPos.y += displacement*1.15;
             }
+
+            
+                    
+
+            
 
             viewPos = gbufferModelView * viewPos; 
             gl_Position = gl_ProjectionMatrix * viewPos;

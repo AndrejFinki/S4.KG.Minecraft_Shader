@@ -44,7 +44,8 @@ const int colortex2Format = RGB16;
 const float sunPathRotation = -60.0f;
 
 /* Optifine: Map Resolutions */
-const int shadowMapResolution = 4096;
+const int shadowMapResolution=1024;
+
 const int noiseTextureResolution = 256;
 
 /* Optifine: Shadow Constants */
@@ -65,6 +66,7 @@ vec3 TransparentShadow( in vec3 );
 void
 main()
 {
+
     vec3 Albedo = pow( texture2D( colortex0, TexCoords ).rgb, vec3( 2.2 ) );
     float Depth = texture2D( depthtex0, TexCoords ).r;
 
@@ -96,7 +98,7 @@ AdjustLightmapTorch( in float torch )
 float
 AdjustLightmapSky( in float sky )
 {
-    return pow( sky, 4 );
+    return pow( sky, 8 );
 }
 
 vec2
