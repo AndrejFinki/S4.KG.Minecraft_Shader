@@ -7,7 +7,8 @@ main()
     /* Albedo colour */
     vec4 albedo = texture2D( texture, tex_coords ) * color;
     
-    /* DRAWBUFFERS:01 */
+    /* DRAWBUFFERS:012 */
     gl_FragData[0] = albedo;
-    gl_FragData[1] = vec4( clamp( normal, 0, 1 ), 1.0f );
+    gl_FragData[1] = vec4( clamp( normal, 0, 1 ), 1.0 );
+    gl_FragData[2] = vec4( lightmap_coords, 0.0, 1.0 );
 }

@@ -4,6 +4,7 @@
 varying vec2 tex_coords;
 varying vec3 normal;
 varying vec4 color;
+varying vec2 lightmap_coords;
 
 uniform sampler2D texture;
 uniform sampler2D colortex0;
