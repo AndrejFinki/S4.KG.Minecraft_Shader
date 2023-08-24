@@ -29,7 +29,16 @@ get_shadow( float depth )
     vec4 shadow_space = shadowProjection * shadowModelView * world;
     shadow_space.xy = distort_position( shadow_space.xy );
     vec3 sample_coords = shadow_space.xyz * 0.5 + 0.5;
-    return transparent_shadow( sample_coords );
+    vec3 shadow_accumulated = vec3( 0.0 );
+    for( int x = -SHADOW_SAMPLES ; x <= SHADOW_SAMPLES ; x++ ) {
+        for( int y = -SHADOW_SAMPLES ; y <= SHADOW_SAMPLES ; y++ ){
+            vec2 offset = vec2( x, y ) / shadowMapResolution;
+            vec3 current_sample_coordinate = vec3( sample_coords.xy + offset, sample_coords.z );
+            shadow_accumulated += transparent_shadow( current_sample_coordinate );
+        }
+    }
+    shadow_accumulated /= total_samples;
+    return shadow_accumulated;
 }
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#define SHADOW_SAMPLES 2
+
 varying vec2 tex_coords;
 varying vec3 normal;
 varying vec4 color;
@@ -38,5 +40,7 @@ const float lightmap_torch_k = 2.0;
 const float lightmap_torch_p = 5.06;
 const vec3 torch_color = vec3( 1.0, 0.25, 0.08 );
 const vec3 sky_color = vec3( 0.05, 0.15, 0.3 );
+const int shadow_samples_per_size = 2 * SHADOW_SAMPLES + 1;
+const int total_samples = shadow_samples_per_size * shadow_samples_per_size;
 
 #endif
