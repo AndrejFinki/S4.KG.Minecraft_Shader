@@ -41,11 +41,11 @@ const int colortex2Format = RGB16;
 */
 
 /* Optifine: Describes how titled the sun is from an overhead path in degrees */
-const float sunPathRotation = -40.0f;
+const float sunPathRotation = -60.0f;
 
 /* Optifine: Map Resolutions */
-const int shadowMapResolution = 1024;
-const int noiseTextureResolution = 128;
+const int shadowMapResolution = 4096;
+const int noiseTextureResolution = 256;
 
 /* Optifine: Shadow Constants */
 const int ShadowSamplesPerSize = 2 * SHADOW_SAMPLES + 1;
@@ -114,14 +114,14 @@ GetLightmapColor( in vec2 Lightmap )
     Lightmap = AdjustLightmap( Lightmap );
 
     const vec3 TorchColor = vec3( 1.0, 0.25, 0.08 );
-    const vec3 SkyColor = vec3( 0.05, 0.15, 0.3 );
+    const vec3 SkyColor = vec3( 0.05, 0.25, 0.54 );
 
     vec3 TorchLighting = Lightmap.x * TorchColor;
     vec3 SkyLighting = Lightmap.y * SkyColor;
 
     vec3 LightmapLighting = TorchLighting + SkyLighting;
 
-    return LightmapLighting;
+    return LightmapLighting*1.15;
 }
 
 vec3
@@ -150,7 +150,7 @@ GetShadow( in float depth )
     }
 
     ShadowAccum /= TotalSamples;
-    return ShadowAccum;
+    return ShadowAccum * 2.15;
 }
 
 float
