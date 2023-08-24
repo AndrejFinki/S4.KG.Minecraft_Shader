@@ -4,7 +4,7 @@
 void
 main()
 {
-    /* Albedo colour */
+    /* Albedo color */
     vec4 albedo = texture2D( texture, tex_coords ) * color;
     
     /* DRAWBUFFERS:012 */
