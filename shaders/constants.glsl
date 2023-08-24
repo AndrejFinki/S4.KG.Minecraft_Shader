@@ -10,6 +10,13 @@ uniform sampler2D texture;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
+uniform sampler2D depthtex0;
+uniform sampler2D shadowtex0;
+
+uniform mat4 gbufferProjectionInverse;
+uniform mat4 gbufferModelViewInverse;
+uniform mat4 shadowModelView;
+uniform mat4 shadowProjection;
 
 uniform vec3 sunPosition;
 
@@ -17,6 +24,7 @@ uniform vec3 sunPosition;
 const int colortex0Format = RGBA16;
 const int colortex1Format = RGBA16;
 const int colortex2Format = RGBA16;
+const int shadowMapResolution = 1024;
 */
 
 const float sunPathRotation = -40.0;

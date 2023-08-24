@@ -1,6 +1,7 @@
 #version 120
 #include "constants.glsl"
 #include "lightmap.glsl"
+#include "shadow.glsl"
 
 void
 main()
@@ -19,7 +20,7 @@ main()
     float NdotL = max( dot( normal, normalize( sunPosition ) ), 0.0 );
 
     /* Final diffuse color */
-    vec3 diffuse = albedo * ( lightmap_color + NdotL + ambient_gamma );
+    vec3 diffuse = albedo * ( lightmap_color + NdotL * get_shadow() + ambient_gamma );
     
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4( diffuse, 1.0 );
