@@ -1,10 +1,9 @@
 #version 120
-
-varying vec2 TexCoords;
+#include "constants.glsl"
 
 void
 main()
 {
    gl_Position = ftransform();
-   TexCoords = gl_MultiTexCoord0.st;
+   tex_coords = gl_MultiTexCoord0.st;
 }

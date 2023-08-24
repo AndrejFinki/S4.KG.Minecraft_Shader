@@ -1,12 +1,11 @@
 #version 120
-
-varying vec2 TexCoords;
-
-uniform sampler2D colortex0;
+#include "constants.glsl"
 
 void
 main()
 {
-   vec3 Color = pow( texture2D( colortex0, TexCoords ).rgb, vec3( 1.0 / 2.2 ) );
-   gl_FragColor = vec4( Color, 1.0 );
+   /* Gamma Correction */
+   vec3 color = pow( texture2D( colortex0, tex_coords ).rgb, vec3( final_gamma_correction ) );
+   
+   gl_FragColor = vec4( color, 1.0 );
 }

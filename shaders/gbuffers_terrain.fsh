@@ -1,20 +1,14 @@
 #version 120
-
-varying vec2 TexCoords;
-varying vec2 LightmapCoords;
-varying vec3 Normal;
-varying vec4 Color;
-
-/* Optifine: The texture atlas */
-uniform sampler2D texture;
+#include "constants.glsl"
 
 void
 main()
 {
-    vec4 Albedo = texture2D( texture, TexCoords ) * Color;
-
+    /* Albedo color */
+    vec4 albedo = texture2D( texture, tex_coords ) * color;
+    
     /* DRAWBUFFERS:012 */
-    gl_FragData[0] = Albedo;
-    gl_FragData[1] = vec4( Normal * 0.5 + 0.5, 1.0 );
-    gl_FragData[2] = vec4( LightmapCoords, 0.0, 1.0 );
+    gl_FragData[0] = albedo;
+    gl_FragData[1] = vec4( normal * 0.5 + 0.5, 1.0 );
+    gl_FragData[2] = vec4( lightmap_coords, 0.0, 1.0 );
 }
