@@ -30,9 +30,13 @@ get_shadow( float depth )
     shadow_space.xy = distort_position( shadow_space.xy );
     vec3 sample_coords = shadow_space.xyz * 0.5 + 0.5;
     vec3 shadow_accumulated = vec3( 0.0 );
+    float random_angle = texture2D( noisetex, tex_coords * 20.0 ).r * 100.0;
+    float cos_theta = cos( random_angle );
+    float sin_theta = sin( random_angle );
+    mat2 rotation = mat2( cos_theta, -sin_theta, sin_theta, cos_theta ) / shadowMapResolution;
     for( int x = -SHADOW_SAMPLES ; x <= SHADOW_SAMPLES ; x++ ) {
         for( int y = -SHADOW_SAMPLES ; y <= SHADOW_SAMPLES ; y++ ){
-            vec2 offset = vec2( x, y ) / shadowMapResolution;
+            vec2 offset = rotation * vec2( x, y );
             vec3 current_sample_coordinate = vec3( sample_coords.xy + offset, sample_coords.z );
             shadow_accumulated += transparent_shadow( current_sample_coordinate );
         }

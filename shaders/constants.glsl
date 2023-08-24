@@ -16,6 +16,7 @@ uniform sampler2D depthtex0;
 uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 uniform sampler2D shadowcolor0;
+uniform sampler2D noisetex;
 
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
@@ -32,6 +33,7 @@ const int colortex2Format = RGBA16;
 
 const int shadowMapResolution = 1024;
 const float sunPathRotation = -40.0;
+const int noiseTextureResolution = 128;
 
 const float gamma_correction = 2.2;
 const float final_gamma_correction = 1.0 / gamma_correction;
