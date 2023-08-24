@@ -24,9 +24,9 @@ uniform vec3 sunPosition;
 const int colortex0Format = RGBA16;
 const int colortex1Format = RGBA16;
 const int colortex2Format = RGBA16;
-const int shadowMapResolution = 1024;
 */
 
+const int shadowMapResolution = 1024;
 const float sunPathRotation = -40.0;
 
 const float gamma_correction = 2.2;
