@@ -2,11 +2,18 @@
 #define CONSTANTS_H
 
 #define SHADOW_SAMPLES 2
+#define PI 3.1415926535
+
+#ifdef VSH
+attribute vec4 mc_Entity;
+#endif
 
 varying vec2 tex_coords;
 varying vec3 normal;
 varying vec4 color;
 varying vec2 lightmap_coords;
+
+uniform float frameTimeCounter;
 
 uniform sampler2D texture;
 uniform sampler2D colortex0;
@@ -19,11 +26,13 @@ uniform sampler2D shadowcolor0;
 uniform sampler2D noisetex;
 
 uniform mat4 gbufferProjectionInverse;
+uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
 
 uniform vec3 sunPosition;
+uniform vec3 cameraPosition;
 
 /*
 const int colortex0Format = RGBA16;
