@@ -4,10 +4,6 @@
 #define SHADOW_SAMPLES 2
 #define PI 3.1415926535
 
-#ifdef VSH
-attribute vec4 mc_Entity;
-#endif
-
 varying vec2 tex_coords;
 varying vec3 normal;
 varying vec4 color;

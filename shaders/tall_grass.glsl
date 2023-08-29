@@ -2,6 +2,8 @@
 #define TALL_GRASS_H
 #include "constants.glsl"
 
+attribute vec4 mc_Entity;
+
 void
 tall_grass_glsl()
 {
@@ -21,6 +23,12 @@ tall_grass_glsl()
     }
     view_pos = gbufferModelView * view_pos; 
     gl_Position = gl_ProjectionMatrix * view_pos;
+}
+
+bool
+tall_grass_check()
+{
+    return mc_Entity.x == 10031.0 || mc_Entity.x == 10175.0;
 }
 
 #endif
