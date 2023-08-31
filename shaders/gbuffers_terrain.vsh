@@ -1,6 +1,6 @@
 #version 120
 #include "constants.glsl"
-#include "tall_grass.glsl"
+#include "wavy.glsl"
 
 void
 main()
@@ -11,5 +11,8 @@ main()
     color = gl_Color;
     lightmap_coords = mat2( gl_TextureMatrix[1] ) * gl_MultiTexCoord1.st;
     lightmap_coords = ( lightmap_coords * 33.05 / 32.0 ) - ( 1.05 / 32.0 );
-    if( tall_grass_check() ) tall_grass_glsl();
+     bool istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t;
+    if( waving_grass_check() || waving_tall_grass_check(istopv) || waving_leaves_check() ) wave_glsl();
+   
+   
 }
