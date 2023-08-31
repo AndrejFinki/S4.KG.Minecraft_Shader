@@ -3,6 +3,8 @@
 uniform sampler2D lightmap;
 uniform sampler2D texture;
 uniform vec3 sunPosition;
+uniform float rainStrength;
+uniform int worldTime;
 
 varying vec2 lmcoord;
 varying vec2 texcoord;
@@ -17,6 +19,12 @@ float fresnelSchlick(float cosTheta, float F0) {
 void main() {
 	vec4 color = texture2D(texture, texcoord) * glcolor;
 	color *= texture2D(lightmap, lmcoord);
+
+    if(worldTime > 13050 || rainStrength>0.1){
+        /* DRAWBUFFERS:0 */
+        gl_FragData[0] = color;
+        return;
+    }
     
     vec3 halfwayDir = normalize(normalize(sunPosition) - viewDir);
 
