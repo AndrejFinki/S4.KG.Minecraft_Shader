@@ -22,12 +22,8 @@ void main() {
 
     float spec = max(dot(Normal, halfwayDir),0.0) ;
     
-    
-    float intensity = 1.0f;
 
-    intensity = mix(intensity, 1.0, fresnelSchlick(dot(-normalize(viewDir), Normal), 0.8));
-
-    vec4 finalColor = color + pow(spec, 32)*vec4(0.45f)*intensity;
+    vec4 finalColor = color + pow(spec, 32)*vec4(0.65f)*fresnelSchlick(max(dot(normalize(viewDir), Normal), 0.0), 0.45);
     
 
 /* DRAWBUFFERS:0 */
