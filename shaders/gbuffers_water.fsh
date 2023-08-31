@@ -18,12 +18,12 @@ void main() {
 	vec4 color = texture2D(texture, texcoord) * glcolor;
 	color *= texture2D(lightmap, lmcoord);
     
-    vec3 halfwayDir = normalize(normalize(sunPosition) - normalize(viewDir));
+    vec3 halfwayDir = normalize(normalize(sunPosition) - viewDir);
 
     float spec = max(dot(Normal, halfwayDir),0.0) ;
     
 
-    vec4 finalColor = color + pow(spec, 32)*vec4(0.65f)*fresnelSchlick(max(dot(normalize(viewDir), Normal), 0.0), 0.45);
+    vec4 finalColor = color + pow(spec, 32)*vec4(0.65f)*fresnelSchlick(max(dot(-viewDir, Normal), 0.0), 0.8);
     
 
 /* DRAWBUFFERS:0 */
