@@ -28,11 +28,11 @@ main()
         float NdotL = max( dot( normal, normalize( sunPosition ) ), 0.0 );
 
         vec3 diffuse;
-        if(rainStrength > 0.1){
-            diffuse = albedo *(ambient_gamma + NdotL + lightmap_color*2.0);
+        if(rainStrength > 0.1 && worldTime<13050){
+            diffuse = albedo *(ambient_gamma + NdotL*get_shadow(depth) + lightmap_color)*0.125;
             
         }else{
-            diffuse = albedo * (ambient_gamma + lightmap_color*2);
+            diffuse = albedo * (ambient_gamma + lightmap_color*2.0);
         }
 
         
