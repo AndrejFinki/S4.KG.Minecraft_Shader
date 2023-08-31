@@ -53,7 +53,7 @@ const float ambient_gamma = 0.25;
 const float lightmap_torch_k = 2.0;
 const float lightmap_torch_p = 5.06;
 const vec3 torch_color = vec3( 1.0, 0.25, 0.08 );
-vec3 sky_color = vec3( 0.05, 0.15, 0.3 );
+vec3 sky_color = vec3( 0.05, 0.15, 1.0 );
 const int shadow_samples_per_size = 2 * SHADOW_SAMPLES + 1;
 const int total_samples = shadow_samples_per_size * shadow_samples_per_size;
 
