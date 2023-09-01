@@ -5,7 +5,6 @@ void
 main()
 {
 	vec4 final_color = texture2D( texture, tex_coords ) * color;
-	
 	final_color *= texture2D( lightmap, lightmap_coords );
 
     /* DRAWBUFFERS:012 */
