@@ -1,7 +1,7 @@
 #version 120
-#include "constants.glsl"
-#include "lightmap.glsl"
-#include "shadow.glsl"
+#include "headers/constants.glsl"
+#include "headers/lightmap.glsl"
+#include "headers/shadow.glsl"
 
 void
 main()

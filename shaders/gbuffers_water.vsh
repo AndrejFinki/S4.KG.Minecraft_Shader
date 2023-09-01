@@ -1,6 +1,6 @@
 #version 120
-#include "constants.glsl"
-#include "wavy_water.glsl"
+#include "headers/constants.glsl"
+#include "headers/wavy_water.glsl"
 
 attribute vec4 at_tangent;
 

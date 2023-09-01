@@ -1,6 +1,6 @@
 #version 120
-#include "constants.glsl"
-#include "wavy_terrain.glsl"
+#include "headers/constants.glsl"
+#include "headers/wavy_terrain.glsl"
 
 void
 main()
