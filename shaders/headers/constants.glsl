@@ -33,6 +33,7 @@ uniform mat4 shadowProjection;
 
 uniform vec3 sunPosition;
 uniform vec3 cameraPosition;
+uniform vec4 entityColor;
 
 /*
 const int colortex0Format = RGBA16;
