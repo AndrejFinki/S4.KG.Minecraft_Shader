@@ -34,8 +34,6 @@ uniform mat4 shadowProjection;
 uniform vec3 sunPosition;
 uniform vec3 cameraPosition;
 
-
-
 /*
 const int colortex0Format = RGBA16;
 const int colortex1Format = RGBA16;
