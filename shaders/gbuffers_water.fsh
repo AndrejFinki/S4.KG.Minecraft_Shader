@@ -1,6 +1,6 @@
 #version 120
-#include "constants.glsl"
-#include "schlick_fresnel.glsl"
+#include "headers/constants.glsl"
+#include "headers/schlick_fresnel.glsl"
 
 void
 main()

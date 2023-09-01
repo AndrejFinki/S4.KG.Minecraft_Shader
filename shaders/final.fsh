@@ -1,5 +1,5 @@
 #version 120
-#include "constants.glsl"
+#include "headers/constants.glsl"
 
 void
 main()

@@ -1,6 +1,6 @@
 #version 120
-#include "constants.glsl"
-#include "distort.glsl"
+#include "headers/constants.glsl"
+#include "headers/distort.glsl"
 
 void
 main()
