@@ -8,6 +8,9 @@ varying vec2 tex_coords;
 varying vec3 normal;
 varying vec4 color;
 varying vec2 lightmap_coords;
+varying vec3 view_dir;
+
+varying mat3 tbn_matrix;
 
 uniform float frameTimeCounter;
 
@@ -20,6 +23,7 @@ uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 uniform sampler2D shadowcolor0;
 uniform sampler2D noisetex;
+uniform sampler2D lightmap;
 
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelView;
@@ -29,6 +33,8 @@ uniform mat4 shadowProjection;
 
 uniform vec3 sunPosition;
 uniform vec3 cameraPosition;
+
+
 
 /*
 const int colortex0Format = RGBA16;
