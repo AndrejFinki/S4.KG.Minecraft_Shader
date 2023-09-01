@@ -15,6 +15,8 @@ varying mat3 tbn_matrix;
 uniform float frameTimeCounter;
 uniform int worldTime;
 uniform float rainStrength;
+uniform float viewWidth;
+uniform float viewHeight;
 
 uniform sampler2D texture;
 uniform sampler2D colortex0;
@@ -32,6 +34,7 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
+uniform mat4 gbufferProjection;
 
 uniform vec3 sunPosition;
 uniform vec3 cameraPosition;
