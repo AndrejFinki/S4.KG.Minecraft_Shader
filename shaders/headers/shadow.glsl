@@ -42,7 +42,7 @@ get_shadow( float depth )
         }
     }
     shadow_accumulated /= total_samples;
-    return shadow_accumulated;
+    return shadow_accumulated * 1.35;
 }
 
 #endif
