@@ -10,5 +10,5 @@ void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord  = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	glcolor = gl_Color;
-    Normal = gl_NormalMatrix*gl_Normal;
+    Normal = gl_NormalMatrix * gl_Normal;
 }

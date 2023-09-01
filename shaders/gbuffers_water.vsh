@@ -16,6 +16,7 @@ varying vec4 glcolor;
 varying vec3 viewDir;
 varying vec3 Normal;
 varying mat3 tbnMatrix;
+varying vec3 worldPos;
 
 
 float water_wave(float amp1, float amp2, vec3 world_pos, float w1, float w2){
@@ -31,6 +32,7 @@ void main() {
 
     vec3 eye_player_pos = mat3(gbufferModelViewInverse)*vertexPosition.xyz;
     vec3 world_pos = eye_player_pos + cameraPosition + gbufferModelViewInverse[3].xyz;
+    worldPos = world_pos;
 
     float fy = fract(world_pos.y+0.001);
 
