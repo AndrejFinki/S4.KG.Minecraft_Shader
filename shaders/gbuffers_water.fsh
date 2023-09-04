@@ -1,8 +1,10 @@
 #version 120
+#include "distort_v2.glsl"
 
 uniform sampler2D lightmap;
 uniform sampler2D texture;
 uniform sampler2D depthtex0;
+uniform sampler2D shadowtex0;
 uniform vec3 sunPosition;
 uniform float rainStrength;
 uniform int worldTime;
@@ -15,6 +17,7 @@ varying vec4 glcolor;
 varying vec3 viewDir;
 varying vec3 Normal;
 varying vec3 worldPos;
+varying vec4 shadowPos;
 
 float fresnelSchlick(float cosTheta, float F0) {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
@@ -22,9 +25,6 @@ float fresnelSchlick(float cosTheta, float F0) {
 
 void main() {
 	vec4 color = texture2D(texture, texcoord) * glcolor;
-	color *= texture2D(lightmap, lmcoord);
-
-
 
     if(worldTime > 13050 || rainStrength>0.1){
         /* DRAWBUFFERS:012 */

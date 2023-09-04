@@ -1,22 +1,22 @@
 #version 120
 #define TWO_PI 6.28318530718
+#include "distort_v2.glsl"
 
 attribute vec4 at_tangent;
-
-uniform sampler2D noisetex;
 
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferModelView;
 uniform vec3 cameraPosition;
 uniform float frameTimeCounter;
 
+
 varying vec2 lmcoord;
 varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec3 viewDir;
 varying vec3 Normal;
-varying mat3 tbnMatrix;
 varying vec3 worldPos;
+
 
 
 float water_wave(float amp1, float amp2, vec3 world_pos, float w1, float w2){
