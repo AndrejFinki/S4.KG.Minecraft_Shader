@@ -8,8 +8,6 @@
 #define SSAO_IM SSAO_I * SSAO_I_FACTOR
 
 varying vec3 Normal;
-varying mat3 tbn;
-varying vec3 pos;
 
 void
 main()
@@ -29,22 +27,18 @@ main()
 
     /* Get lightmap and it's color */
     vec2 lightmap = texture2D( colortex2, tex_coords ).rg;
-    vec3 lightmap_color = get_lightmap_color( lightmap );
+    vec3 lightmap_color = get_lightmap_color( lightmap, vec3(0.05, 0.15, 0.6) );
 
     /* Compute cos theta between the normal and sun directions */
     float NdotL = max( dot( normal, normalize( sunPosition ) ), 0.0 );
-    
-    float ao = AmbientOcclusion();
-    
-    vec3 ambient = vec3(ambient_gamma * color_nonalbedo * ao);
 
     if( worldTime > 13050 ){
 
         vec3 diffuse;
         
         float NdotL = max( dot( normal, normalize( moonPosition ) ), 0.0 );
-
-        diffuse = albedo * (ambient + lightmap_color*2);
+        lightmap_color = get_lightmap_color( lightmap , vec3(0.15, 0.25, 0.8));
+        diffuse = albedo * (ambient_gamma + NdotL*get_shadow(depth)*+ lightmap_color)*vec3(0.2,0.2,1.2);
         
         /* DRAWBUFFERS:0 */
         gl_FragData[0] = vec4( diffuse, 1.0);
