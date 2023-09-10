@@ -2,6 +2,14 @@
 #include "headers/constants.glsl"
 #include "headers/wavy_water.glsl"
 
+/*
+    Gbuffers_Water Vertex Shader
+    Gbuffers programs are the main geometry passes, where entities, particals, blocks, etc. are rendered.
+    Gbuffers_Water is a program specifically for any bodies of water.
+    This does not affect other liquids, such as lava.
+    More information about water blocks can be found here: https://minecraft.fandom.com/wiki/Water
+*/
+
 attribute vec4 at_tangent;
 
 void

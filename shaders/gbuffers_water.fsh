@@ -2,6 +2,14 @@
 #include "headers/constants.glsl"
 #include "headers/schlick_fresnel.glsl"
 
+/*
+    Gbuffers_Water Fragment Shader
+    Gbuffers programs are the main geometry passes, where entities, particals, blocks, etc. are rendered.
+    Gbuffers_Water is a program specifically for any bodies of water.
+    This does not affect other liquids, such as lava.
+    More information about water blocks can be found here: https://minecraft.fandom.com/wiki/Water
+*/
+
 void
 main()
 {

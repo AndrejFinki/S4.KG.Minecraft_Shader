@@ -1,6 +1,13 @@
 #version 120
 #include "headers/constants.glsl"
 
+/*
+    Gbuffers_Terrain Fragment Shader
+    Gbuffers programs are the main geometry passes, where entities, particals, blocks, etc. are rendered.
+    Gbuffers_Terrain is a program specifically for any solid blocks, like dirt, stone, etc.
+    A list of solid blocks can be found here: https://minecraft.fandom.com/wiki/Solid_block
+*/
+
 void
 main()
 {
