@@ -37,6 +37,7 @@ main()
         
         float NdotL = max( dot( normal, normalize( moonPosition ) ), 0.0 );
         lightmap_color = get_lightmap_color( lightmap , vec3(0.15, 0.25, 0.8));
+
         diffuse = albedo * (ambient_gamma + NdotL*get_shadow(depth)+ lightmap_color)*vec3(0.2,0.2,1.2);
         
         /* DRAWBUFFERS:0 */
@@ -46,9 +47,12 @@ main()
     }
  
     /* Final diffuse color */
+    vec3 diffuse;
 
     
-    vec3 diffuse = albedo * ( lightmap_color*1.35 + NdotL * get_shadow( depth ) + ambient_gamma )  ;
+    diffuse = albedo * ( lightmap_color*1.35 + NdotL * get_shadow( depth ) + ambient_gamma )  ;
+    
+    
     
     /* DRAWBUFFERS:0 */
     
