@@ -32,7 +32,7 @@ night_time( vec3 albedo, float depth )
     vec2 lightmap = texture2D( colortex2, tex_coords ).rg;
     vec3 lightmap_color = get_lightmap_color( lightmap , vec3( 0.15, 0.25, 0.8 ) );
     float NdotL = max( dot( normal, normalize( moonPosition ) ), 0.0 );
-    vec3 diffuse = albedo * ( lightmap_color * 1.35 + NdotL * get_shadow( depth ) + ambient_gamma ) * vec3( 0.4, 0.4, 0.8 );
+    vec3 diffuse = albedo * ( lightmap_color * 1.35 + NdotL * get_shadow( depth ) + ambient_gamma ) * vec3( 0.2, 0.2, 0.4 );
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4( diffuse, 1.0 );

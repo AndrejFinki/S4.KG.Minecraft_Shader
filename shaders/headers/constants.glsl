@@ -14,6 +14,7 @@ varying vec3 normal;
 varying vec4 color;
 varying vec2 lightmap_coords;
 varying vec3 view_dir;
+varying mat3 tangent_bitangent_normal;
 
 varying mat3 tbn_matrix;
 
