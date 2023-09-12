@@ -4,13 +4,13 @@
 #include "distort.glsl"
 
 float
-visibility( in sampler2D shadow_map, in vec3 sample_coords )
+visibility( sampler2D shadow_map, vec3 sample_coords )
 {
     return step( sample_coords.z - 0.001, texture2D( shadow_map, sample_coords.xy ).r );
 }
 
 vec3
-transparent_shadow( in vec3 sample_coords )
+transparent_shadow( vec3 sample_coords )
 {
     float shadow_visibility_0 = visibility( shadowtex0, sample_coords );
     float shadow_visibility_1 = visibility( shadowtex1, sample_coords );
