@@ -3,10 +3,34 @@
 #include "headers/lightmap.glsl"
 #include "headers/shadow.glsl"
 
+uniform sampler2D colortex5;
 /*
     Composite Fragment Shader
     The composite programs are fullscreen passes that run after all the gbuffers programs have finished executing.
 */
+
+const int stepcount = 32;
+const int stepsize = 1/stepcount;
+
+bool raymarch(out vec3 rayPos, vec3 rayDir){
+    float depth_pos;
+    bool intersected = false;
+    //rayPos += rayDirection*0.1512;
+    for(int i = 0; i<stepcount; i++){
+        rayPos+=rayDir*stepsize;
+
+        depth_pos = texture2D(depthtex0, rayPos.xy).r;
+        if(rayPos.z > depth_pos){
+            intersected = true;
+            break;
+        }
+        if(rayPos.x > 1.0 || rayPos.y > 1.0 || rayPos.x < 0.0 || rayPos.y < 0.0){
+            break;
+        }
+    }
+
+    return intersected;
+}
 
 void
 main()
@@ -45,7 +69,25 @@ main()
 
         return;
     }
- 
+    
+
+    if(texture2D(colortex5,tex_coords).x > 0.5){
+        vec3 normspace = normalize( texture2D( colortex1, tex_coords ).rgb );
+        vec3 viewPos = reflect(vec3(tex_coords, texture2D(depthtex0, tex_coords)), normspace);
+        vec3 viewDir = normalize(viewPos);
+        bool hit = raymarch(viewPos, viewDir);
+        vec4 color = texture2D( colortex0, tex_coords );
+        if(hit){
+            color = texture2D(colortex0, viewPos.xy);
+        }
+        /* DRAWBUFFERS:0 */
+    
+        gl_FragData[0] = color;
+
+        return;
+    }
+    
+
     /* Final diffuse color */
     vec3 diffuse;
 
