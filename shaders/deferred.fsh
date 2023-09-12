@@ -1,17 +1,6 @@
 #version 120
 #extension GL_EXT_gpu_shader4 : enable
-#define SSAO_I 100
-#define SSAO_I_FACTOR 0.004
-#define SSAO_IM SSAO_I * SSAO_I_FACTOR
 #include "headers/constants.glsl"
-
-uniform sampler2D gcolor;
-
-varying vec2 texcoord;
-varying mat3 tbn;
-
-const int kernel_size = 64; // change to 16 to compare]
-const int noise_resolution = 16;
 
   void pcg(inout uint seed) {
      uint state = seed * 747796405u + 2891336453u;
@@ -70,7 +59,7 @@ const int noise_resolution = 16;
 
      vec3 normal = normalize( texture2D( colortex1, tex_coords ).rgb * 2.0 - 1.0) ;
 
-     normal = tbn * normal;
+     normal = tangent_bitangent_normal * normal;
 
      vec2 NoiseScale = vec2(viewWidth/noiseTextureResolution, viewHeight/noiseTextureResolution);
     
@@ -90,11 +79,11 @@ const int noise_resolution = 16;
      vec3 RandomVector = noise[noiseX + (noiseY*4)];
      // vec3 tangent = normalize(RandomVector - normal * dot(RandomVector, normal));
      // vec3 bitangent = cross(normal, tangent);
-     // mat3 tbn_new = mat3(tangent, bitangent, normal);
+     // mat3 tangent_bitangent_normal_new = mat3(tangent, bitangent, normal);
         
      for(int i = 0; i<kernel_size; i++){
         
-         vec3 samplePos = tbn*kernel[i];
+         vec3 samplePos = tangent_bitangent_normal*kernel[i];
          samplePos = radius*samplePos + origin;
 
          vec4 offset = vec4(samplePos, 1.0);
@@ -129,9 +118,9 @@ vec2 OffsetDist(float x, int s) {
     }
 
 float AO(){
-    float z0 = texture2D(depthtex0, texcoord, 0).r;
+    float z0 = texture2D(depthtex0, tex_coords, 0).r;
     float linearZ0 = get_linear_depth(z0);
-    float dither = texture2D(noisetex, texcoord * vec2(viewWidth, viewHeight) / 128.0).b;
+    float dither = texture2D(noisetex, tex_coords * vec2(viewWidth, viewHeight) / 128.0).b;
     float ditherAnimate = 1.61803398875 * mod(float(frameCounter), 3600.0);
     dither = fract(dither + ditherAnimate);
 
@@ -153,8 +142,8 @@ float AO(){
                 offset.y = -offset.y;
             }
 
-            vec2 coord1 = texcoord + offset;
-            vec2 coord2 = texcoord - offset;
+            vec2 coord1 = tex_coords + offset;
+            vec2 coord2 = tex_coords - offset;
 
             sampleDepth = get_linear_depth(texture2D(depthtex0, coord1).r);
             float aosample = (far-near) * (linearZ0 - sampleDepth) * 2.0;
@@ -177,10 +166,10 @@ float AO(){
 }
 
 void main() {
-	vec3 color = texture2D(gcolor, texcoord).rgb;
+	vec3 color = texture2D(colortex0, tex_coords).rgb;
     color*=AO();
    // color += AmbientOcclusion();
 
 /* DRAWBUFFERS:0 */
-	gl_FragData[0] = vec4(color, 1.0); //gcolor
+	gl_FragData[0] = vec4(color, 1.0); //colortex0
 }
