@@ -18,5 +18,6 @@ main()
    vec3 bitangent = cross( normal, tangent );
    mat3 tangent_bitangent_normal = mat3( normal, tangent, bitangent );
    gl_Position = ftransform();
-   tex_coords = gl_MultiTexCoord0.st;
+   tex_coords = ( gl_TextureMatrix[0] * gl_MultiTexCoord0 ).xy;
+   normal = gl_NormalMatrix * gl_Normal;
 }

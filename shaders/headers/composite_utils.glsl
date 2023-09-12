@@ -28,11 +28,14 @@ day_time_check()
 void
 night_time( vec3 albedo, float depth )
 {
+    lightmap_torch_k = 20.0;
+    lightmap_torch_p = 3.0;
+
     vec3 normal = normalize( texture2D( colortex1, tex_coords ).rgb * 2.0 - 1.0 );
     vec2 lightmap = texture2D( colortex2, tex_coords ).rg;
     vec3 lightmap_color = get_lightmap_color( lightmap , vec3( 0.15, 0.25, 0.8 ) );
     float NdotL = max( dot( normal, normalize( moonPosition ) ), 0.0 );
-    vec3 diffuse = albedo * ( lightmap_color * 1.35 + NdotL * get_shadow( depth ) + ambient_gamma ) * vec3( 0.2, 0.2, 0.4 );
+    vec3 diffuse = albedo * ( lightmap_color * 1.35 + NdotL * get_shadow( depth ) + ambient_gamma ) * vec3( 0.2, 0.2, 0.3 );
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4( diffuse, 1.0 );
@@ -41,6 +44,9 @@ night_time( vec3 albedo, float depth )
 void
 day_time( vec3 albedo, float depth )
 {
+    lightmap_torch_k = 3.0;
+    lightmap_torch_p = 7.0;
+
     vec3 normal = normalize( texture2D( colortex1, tex_coords ).rgb * 2.0 - 1.0 );
     vec2 lightmap = texture2D( colortex2, tex_coords ).rg;
     vec3 lightmap_color = get_lightmap_color( lightmap, vec3( 0.05, 0.15, 0.6 ) );
@@ -54,6 +60,9 @@ day_time( vec3 albedo, float depth )
 void
 default_time( vec3 albedo, float depth )
 {
+    lightmap_torch_k = 7.0;
+    lightmap_torch_p = 10.0;
+
     vec3 normal = normalize( texture2D( colortex1, tex_coords ).rgb * 2.0 - 1.0 );
     vec2 lightmap = texture2D( colortex2, tex_coords ).rg;
     vec3 lightmap_color = get_lightmap_color( lightmap );

@@ -65,11 +65,12 @@ const int noiseTextureResolution = 128;
 const float gamma_correction = 2.2;
 const float final_gamma_correction = 1.0 / gamma_correction;
 const float ambient_gamma = 0.3;
-const float lightmap_torch_k = 2.0;
-const float lightmap_torch_p = 5.06;
 const vec3 torch_color = vec3( 1.0, 0.25, 0.08 );
 const vec3 sky_color = vec3( 0.05, 0.15, 0.6 );
 const int shadow_samples_per_size = 2 * SHADOW_SAMPLES + 1;
 const int total_samples = shadow_samples_per_size * shadow_samples_per_size;
+
+float lightmap_torch_k = 0.0;
+float lightmap_torch_p = 0.0;
 
 #endif
