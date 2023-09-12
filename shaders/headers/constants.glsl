@@ -1,8 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#extension GL_EXT_gpu_shader4 : enable
-
 #define SHADOW_SAMPLES 2
 #define PI 3.1415926535
 #define SSAO_I 100
