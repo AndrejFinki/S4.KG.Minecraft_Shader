@@ -37,6 +37,7 @@ uniform mat4 shadowProjection;
 uniform mat4 gbufferProjection;
 
 uniform vec3 sunPosition;
+uniform vec3 moonPosition;
 uniform vec3 cameraPosition;
 uniform vec4 entityColor;
 
