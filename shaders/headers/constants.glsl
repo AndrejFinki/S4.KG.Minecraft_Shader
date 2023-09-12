@@ -1,8 +1,13 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#extension GL_EXT_gpu_shader4 : enable
+
 #define SHADOW_SAMPLES 2
 #define PI 3.1415926535
+#define SSAO_I 100
+#define SSAO_I_FACTOR 0.004
+#define SSAO_IM SSAO_I * SSAO_I_FACTOR
 
 varying vec2 tex_coords;
 varying vec3 normal;
