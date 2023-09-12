@@ -34,4 +34,14 @@ get_lightmap_color( vec2 lightmap )
     return total_lighthing;
 }
 
+vec3
+get_lightmap_color( vec2 lightmap, vec3 sky_type_lighting )
+{
+  lightmap = adjust_lightmap( lightmap );
+  vec3 torch_lighthing = lightmap.x * torch_color;
+  vec3 sky_lighthing = lightmap.y * sky_color;
+  vec3 total_lighthing = torch_lighthing + sky_type_lighting;
+  return total_lighthing;
+}
+
 #endif
