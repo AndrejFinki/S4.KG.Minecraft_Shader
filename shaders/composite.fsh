@@ -3,6 +3,11 @@
 #include "headers/lightmap.glsl"
 #include "headers/shadow.glsl"
 
+/*
+    Composite Fragment Shader
+    The composite programs are fullscreen passes that run after all the gbuffers programs have finished executing.
+*/
+
 void
 main()
 {
