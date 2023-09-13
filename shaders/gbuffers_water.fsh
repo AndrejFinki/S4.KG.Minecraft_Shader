@@ -19,7 +19,8 @@ main()
     float specular = max( dot( normal, half_dir ), 0.0 );
     final_color = final_color + pow( specular, 32 ) * vec4( 0.65 ) * schlick_fresnel( max( dot( -view_dir, normal ), 0.0 ), 0.8 );
     
-    /* DRAWBUFFERS:05 */
+    /* DRAWBUFFERS:015 */
     gl_FragData[0] = final_color;
-    gl_FragData[1] = vec4(1.0);
+    gl_FragData[1] = vec4(normal*0.5 + 0.5, 1.0);
+    gl_FragData[2] = vec4(1.0);
 }

@@ -5,54 +5,93 @@
 #extension GL_EXT_gpu_shader4 : enable
 
 uniform sampler2D colortex5;
+varying vec3 pos;
+varying vec3 Normal;
+
+
 /*
     Composite Fragment Shader
     The composite programs are fullscreen passes that run after all the gbuffers programs have finished executing.
 */
 
-float linearizeDepthFast(float depth, float near, float far) {
-     return (2.0 * near) / (far + near - depth * (far - near));
+struct Hit{
+    vec3 rayPos;
+    bool hit;
+};
+
+
+vec3 FromViewtoScreenSpace(vec3 pos){
+    vec4 intermediary = gbufferProjection*vec4(pos,1.0);
+    vec3 screenSpace = intermediary.xyz/intermediary.w;
+    return screenSpace*0.5+0.5;
 }
 
-const int kernel_size = 64; // change to 16 to compare]
-const int noise_resolution = 16;
-
- void pcg(inout uint seed) {
-    uint state = seed * 747796405u + 2891336453u;
-    uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-    seed = (word >> 22u) ^ word;
-}
-
-uint rngState = 185730u * uint(frameCounter) + uint(gl_FragCoord.x + gl_FragCoord.y * aspectRatio);
-
-float randF()  { pcg(rngState); return float(rngState) / float(0xffffffffu); }
-
-const int stepcount = 32;
+const int stepcount = 64;
 const int stepsize = 1/stepcount;
 
-vec4 raymarch(vec3 rayPos, vec3 rayDir){
+vec3 binaryRefinement(vec3 rayPos, vec3 rayDir){
     float depth_pos;
-    float intersected = 0.0;
-    //rayPos += rayDir*randF();
-    //rayPos += rayDirection*0.1512;
-    //rayDir*=stepsize;
-    //rayPos+=rayDir;
-    for(int i = 0; i<stepcount; i++){
-        rayPos+=rayDir*stepsize;
+    float dist = 0.5;
+    for(int i = 0; i<64; i++){
+        
 
-        depth_pos = texture2D(depthtex0, rayPos.xy).z;
+        vec3 rayScreenPos = FromViewtoScreenSpace(rayPos);
 
-        if(rayPos.z > depth_pos){
-            intersected = 1.0;
-            break;
+        depth_pos = texture2D(depthtex0, rayScreenPos.xy).r;
+
+        if(rayScreenPos.z > depth_pos){
+            rayPos-=rayDir*dist;
+        }else{
+            rayPos+=rayDir*dist;
         }
-        if(clamp(rayPos.xy, 0.0, 1.0) != rayPos.xy){
-            return vec4(0.0);
-        }
+        dist*=0.5;
     }
 
-    return vec4(rayPos,intersected);
+    rayPos = FromViewtoScreenSpace(rayPos);
+
+    return rayPos;
 }
+
+
+Hit raymarch(vec3 rayPos, vec3 rayDir){
+    float depth_pos;
+    bool intersected = false;
+    float distanceD = 50;
+
+    rayPos+=rayDir;
+
+    vec3 raystep = (rayDir*distanceD)/stepcount;
+    
+    for(int i = 0; i<stepcount; i++){
+        
+        rayPos+=raystep;
+
+        vec3 rayScreenPos = FromViewtoScreenSpace(rayPos);
+        
+        depth_pos = texture2D(depthtex0, rayScreenPos.xy).r;
+
+        if(rayScreenPos.z > depth_pos){
+            intersected = true;
+            rayPos = binaryRefinement(rayPos,rayDir);
+            break;
+        }
+        if(rayScreenPos.xy != clamp(rayScreenPos.xy, 0.0, 1.0)){
+            Hit hit;
+            hit.rayPos = vec3(0.0);
+            hit.hit = false;
+            return hit;
+        }
+
+    }
+
+    Hit hit;
+    hit.rayPos = rayPos;
+    hit.hit = intersected;
+
+    return hit;
+}
+
+
 
 void
 main()
@@ -94,18 +133,25 @@ main()
     
 
     if(texture2D(colortex5,tex_coords).x > 0.5){
-        vec3 normspace = normalize( texture2D( colortex1, tex_coords ).rgb*2.0 - 1.0 );
-        vec3 viewPos = vec3(tex_coords, texture2D(depthtex0, tex_coords));
-        vec3 rayPos = reflect(viewPos, normspace);
-        vec3 rayDir = normalize(rayPos);
-        vec4 hit = raymarch(rayPos, rayDir);
+        //vec3 viewNormal = Normal;
+
+        vec3 viewNormal = normalize(texture2D(colortex1, tex_coords).xyz*2.0-1.0);
+        
+        vec3 ndcPos = vec3(tex_coords, texture2D(depthtex0, tex_coords))*2.0-1.0;
+        vec4 intermediary = gbufferProjectionInverse * vec4(ndcPos, 1.0);
+        vec3 viewPos = intermediary.xyz/intermediary.w;
+
+        vec3 rayPos = viewPos;
+        vec3 rayDir =  reflect(viewPos, viewNormal);
+        Hit hit = raymarch(rayPos, rayDir);
+
         vec4 color = pow( texture2D( colortex0, tex_coords ), vec4( gamma_correction ) );
-        if(hit.a == 1.0){
+        if(hit.hit){
             //color = vec4(0.0);
-            color += texture2D(colortex0, hit.xy);
+            color += texture2D(colortex0, hit.rayPos.xy)*0.375;
         }
         /* DRAWBUFFERS:0 */
-    
+       // color = vec4 (normalize(texture2D(colortex1, tex_coords).xyz*2.0-1.0), 1.0);
         gl_FragData[0] = color;
 
         //test
