@@ -1,8 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#extension GL_EXT_gpu_shader4 : enable
-
 #define SHADOW_SAMPLES 2
 #define PI 3.1415926535
 #define SSAO_I 100
@@ -69,6 +67,8 @@ const vec3 torch_color = vec3( 1.0, 0.25, 0.08 );
 const vec3 sky_color = vec3( 0.05, 0.15, 0.6 );
 const int shadow_samples_per_size = 2 * SHADOW_SAMPLES + 1;
 const int total_samples = shadow_samples_per_size * shadow_samples_per_size;
+const int kernel_size = 64;
+const int noise_resolution = 16;
 
 float lightmap_torch_k = 0.0;
 float lightmap_torch_p = 0.0;
