@@ -17,6 +17,10 @@ uniform int worldTime;
 uniform float rainStrength;
 uniform float viewWidth;
 uniform float viewHeight;
+uniform int frameCounter;
+uniform float near;
+uniform float far;
+uniform float aspectRatio;
 
 uniform sampler2D texture;
 uniform sampler2D colortex0;

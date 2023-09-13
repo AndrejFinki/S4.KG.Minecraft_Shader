@@ -2,6 +2,7 @@
 #include "headers/constants.glsl"
 #include "headers/lightmap.glsl"
 #include "headers/shadow.glsl"
+#extension GL_EXT_gpu_shader4 : enable
 
 uniform sampler2D colortex5;
 /*
@@ -9,27 +10,48 @@ uniform sampler2D colortex5;
     The composite programs are fullscreen passes that run after all the gbuffers programs have finished executing.
 */
 
+float linearizeDepthFast(float depth, float near, float far) {
+     return (2.0 * near) / (far + near - depth * (far - near));
+}
+
+const int kernel_size = 64; // change to 16 to compare]
+const int noise_resolution = 16;
+
+ void pcg(inout uint seed) {
+    uint state = seed * 747796405u + 2891336453u;
+    uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+    seed = (word >> 22u) ^ word;
+}
+
+uint rngState = 185730u * uint(frameCounter) + uint(gl_FragCoord.x + gl_FragCoord.y * aspectRatio);
+
+float randF()  { pcg(rngState); return float(rngState) / float(0xffffffffu); }
+
 const int stepcount = 32;
 const int stepsize = 1/stepcount;
 
-bool raymarch(out vec3 rayPos, vec3 rayDir){
+vec4 raymarch(vec3 rayPos, vec3 rayDir){
     float depth_pos;
-    bool intersected = false;
+    float intersected = 0.0;
+    //rayPos += rayDir*randF();
     //rayPos += rayDirection*0.1512;
+    //rayDir*=stepsize;
+    //rayPos+=rayDir;
     for(int i = 0; i<stepcount; i++){
         rayPos+=rayDir*stepsize;
 
-        depth_pos = texture2D(depthtex0, rayPos.xy).r;
+        depth_pos = texture2D(depthtex0, rayPos.xy).z;
+
         if(rayPos.z > depth_pos){
-            intersected = true;
+            intersected = 1.0;
             break;
         }
-        if(rayPos.x > 1.0 || rayPos.y > 1.0 || rayPos.x < 0.0 || rayPos.y < 0.0){
-            break;
+        if(clamp(rayPos.xy, 0.0, 1.0) != rayPos.xy){
+            return vec4(0.0);
         }
     }
 
-    return intersected;
+    return vec4(rayPos,intersected);
 }
 
 void
@@ -72,13 +94,15 @@ main()
     
 
     if(texture2D(colortex5,tex_coords).x > 0.5){
-        vec3 normspace = normalize( texture2D( colortex1, tex_coords ).rgb );
-        vec3 viewPos = reflect(vec3(tex_coords, texture2D(depthtex0, tex_coords)), normspace);
-        vec3 viewDir = normalize(viewPos);
-        bool hit = raymarch(viewPos, viewDir);
-        vec4 color = texture2D( colortex0, tex_coords );
-        if(hit){
-            color = texture2D(colortex0, viewPos.xy);
+        vec3 normspace = normalize( texture2D( colortex1, tex_coords ).rgb*2.0 - 1.0 );
+        vec3 viewPos = vec3(tex_coords, texture2D(depthtex0, tex_coords));
+        vec3 rayPos = reflect(viewPos, normspace);
+        vec3 rayDir = normalize(rayPos);
+        vec4 hit = raymarch(rayPos, rayDir);
+        vec4 color = pow( texture2D( colortex0, tex_coords ), vec4( gamma_correction ) );
+        if(hit.a == 1.0){
+            //color = vec4(0.0);
+            color += texture2D(colortex0, hit.xy);
         }
         /* DRAWBUFFERS:0 */
     

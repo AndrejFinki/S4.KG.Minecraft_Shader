@@ -23,5 +23,5 @@ main()
 
    gl_Position = ftransform();
    tex_coords = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-   Normal = gl_NormalMatrix * gl_Normal;
+   
 }

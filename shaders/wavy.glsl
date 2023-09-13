@@ -1,6 +1,6 @@
 #ifndef WAVY_H
 #define WAVY_H
-#include "constants.glsl"
+#include "headers/constants.glsl"
 
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
