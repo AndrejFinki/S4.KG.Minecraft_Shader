@@ -52,13 +52,23 @@ vec3 binaryRefinement(vec3 rayPos, vec3 rayDir){
     return rayPos;
 }
 
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec3 hash(vec3 a)
+{
+    a = fract(a * vec3(0.8));
+    a += dot(a, a.yxz + 19.19);
+    return fract((a.xxy + a.yxx)*a.zyx);
+}
 
 Hit raymarch(vec3 rayPos, vec3 rayDir){
     float depth_pos;
     bool intersected = false;
     float distanceD = 50;
 
-    rayPos+=rayDir;
+    rayPos+=rayDir*rand(vec2(0.0, 1.0));
 
     vec3 raystep = (rayDir*distanceD)/stepcount;
     
@@ -146,9 +156,12 @@ main()
         Hit hit = raymarch(rayPos, rayDir);
 
         vec4 color = pow( texture2D( colortex0, tex_coords ), vec4( gamma_correction ) );
+        color.xyz = color.xyz * (ambient_gamma + NdotL*get_shadow(depth)+ lightmap_color);
         if(hit.hit){
             //color = vec4(0.0);
             color += texture2D(colortex0, hit.rayPos.xy)*0.375;
+        }else{
+            //color = pow(color, vec4(1/gamma_correction));
         }
         /* DRAWBUFFERS:0 */
        // color = vec4 (normalize(texture2D(colortex1, tex_coords).xyz*2.0-1.0), 1.0);
