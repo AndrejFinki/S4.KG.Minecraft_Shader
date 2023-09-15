@@ -1,6 +1,7 @@
 #version 120
 #include "headers/constants.glsl"
 #include "headers/wavy_terrain.glsl"
+#include "headers/wavy_liquid.glsl"
 
 /*
     Gbuffers_Terrain Vertex Shader
@@ -19,4 +20,5 @@ main()
     lightmap_coords = mat2( gl_TextureMatrix[1] ) * gl_MultiTexCoord1.st;
     lightmap_coords = ( lightmap_coords * 33.05 / 32.0 ) - ( 1.05 / 32.0 );
     if( wave_check() ) wave_glsl();
+    if( liquid_check() ) liquid_wave_glsl();
 }
