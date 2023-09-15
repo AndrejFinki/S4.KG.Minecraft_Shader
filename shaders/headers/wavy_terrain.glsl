@@ -1,5 +1,6 @@
 #ifndef WAVY_TERRAIN_H
 #define WAVY_TERRAIN_H
+
 #include "constants.glsl"
 
 attribute vec4 mc_Entity;

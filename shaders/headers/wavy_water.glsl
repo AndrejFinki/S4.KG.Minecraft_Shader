@@ -3,6 +3,15 @@
 
 #include "constants.glsl"
 
+attribute vec4 mc_Entity;
+
+bool
+water_check()
+{
+  bool is_water = mc_Entity.x == 10002.0;
+  return is_water;
+}
+
 float
 water_wave( float amp1, float amp2, vec3 world_pos, float w1, float w2 )
 {
