@@ -3,7 +3,10 @@
 
 #include "constants.glsl"
 
+#ifndef MC_ENTITY
+#define MC_ENTITY
 attribute vec4 mc_Entity;
+#endif
 
 bool
 liquid_check()

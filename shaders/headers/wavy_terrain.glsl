@@ -3,7 +3,10 @@
 
 #include "constants.glsl"
 
+#ifndef MC_ENTITY
+#define MC_ENTITY
 attribute vec4 mc_Entity;
+#endif
 attribute vec4 mc_midTexCoord;
 
 vec3
