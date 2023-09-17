@@ -1,8 +1,8 @@
 #version 120
+#extension GL_EXT_gpu_shader4 : enable
 #include "headers/constants.glsl"
 #include "headers/lightmap.glsl"
 #include "headers/shadow.glsl"
-#extension GL_EXT_gpu_shader4 : enable
 
 uniform sampler2D colortex5;
 varying vec3 pos;

@@ -1,9 +1,9 @@
 #version 120
+#extension GL_EXT_gpu_shader4 : enable
 #define SSAO_I 100
 #define SSAO_I_FACTOR 0.004
 #define SSAO_IM SSAO_I * SSAO_I_FACTOR
 #include "headers/constants.glsl"
-#extension GL_EXT_gpu_shader4 : enable
 
 uniform sampler2D gcolor;
 
